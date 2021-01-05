@@ -2,24 +2,41 @@ version: "3.7"
 
 services:
 
-  reverseproxy:
-    build:
-      context: ./Nginx
-      dockerfile: Nginx.Dockerfile
-    ports:
-      - "80:80"
-      - "443:443"
-    restart: always
+  #reverseproxy:
+  #  build:
+  #    context: ./Nginx
+  #    dockerfile: Nginx.Dockerfile
+  #  ports:
+  #    - "80:80"
+  #    - "443:443"
+  #  restart: always
 
   api:
-    depends_on:
-      - reverseproxy
+  #  depends_on:
+  #    - reverseproxy
     build:
       context: ./HelloAspNetCore3.Api
       dockerfile: Api.Dockerfile
     expose:
       - "5000"
+    ports:
+      - "8081:5000"
     restart: always
+
+
+networks:
+  default: # buraya default yerine başka bir isim örneğin yukarıdaki gibi 
+           # kms-network deseydik yukarı network tanımlamaları ile ilgili açıklama satılarını açmalıyız.
+           # servislere kms-network diye tanımlama yapılmalıydı
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.2.0/24
+          gateway: 192.168.2.1
+
+
+
 
 # docker-compose build
 # docker-compose up -d
